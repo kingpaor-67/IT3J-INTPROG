@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XMLHttpRequest Lab</title>
+</head>
+<body>
+    <h2>Exploring XMLHttpRequest</h2>
+
+    <button id="loadData">Load Post Data</button>
+
+    <div id="output" style="margin-top: 20px; border: 1px solid #ddd; padding: 10px;">
+        Click the button to load post data.
+    </div>
+
+    <script>
+        document.getElementById("loadData").addEventListener("click", function() {
+            const xhr = new XMLHttpRequest();
+            const output = document.getElementById("output");
+
+            output.textContent = "Loading data...";
+            output.style.color = "black";
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            output.innerHTML = "";
+
+                            const title = document.createElement("p");
+                            const content = document.createElement("p");
+
+                            title.textContent = "Post Title: " + data.title;
+                            content.textContent = "Content: " + data.body;
+
+                            output.appendChild(title);
+                            output.appendChild(content);
+                        } catch (error) {
+                            output.textContent = "Error: Unable to read response.";
+                            output.style.color = "red";
+                        }
+                    } else {
+                        output.textContent = "Error: " + xhr.status + " - " + xhr.statusText;
+                        output.style.color = "red";
+                    }
+                }
+            };
+
+            xhr.onerror = function() {
+                output.textContent = "Error: Network connection failed.";
+                output.style.color = "red";
+            };
+
+            xhr.open("GET", "https://jsonplaceholder.typicode.com/posts/1", true);
+            xhr.send();
+        });
+    </script>
+</body>
+</html>
